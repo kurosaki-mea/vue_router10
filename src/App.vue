@@ -12,6 +12,7 @@ import AppR_01 from './components/AppRouter_01.vue'
     <RouterLink to="/about">关于</RouterLink>
     <RouterLink :to="{ name: 'd1Params'}">d1 看看 Params</RouterLink>
     <RouterLink :to="{ name: 'd1Query'}">d1 看看 Query</RouterLink>
+    <RouterLink :to="{ name: 'd1Props'}">d1 看看 Props 解耦</RouterLink>
 
     <RouterLink to="/goods">去商城看看</RouterLink>
     <!-- 方式 1：直接拼接路径 -->

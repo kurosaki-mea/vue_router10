@@ -17,6 +17,7 @@ import userRoutes from '@/router/modules/user.ts'
 // d1、导入 Params_Router 模块
 import ParamsRoutes from '@/router/modules/d1_Params_Router.ts'
 import QueryRouter from '@/router/modules/d1_Query_Router.ts'
+import PropsRouter from '@/router/modules/d1_Props_Router.ts'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,10 @@ const router = createRouter({
 
     // d1、导入 QueryRouter.ts 路由规则 展开
     ...QueryRouter,
+
+    // d1、导入 PropsRouter.ts 路由规则，解耦模块展示
+    ...PropsRouter,
+
     {
       path: '/about',
       name: 'about',
