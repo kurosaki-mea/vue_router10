@@ -4,7 +4,10 @@
 defineProps<{
     id: number,
     name?: string,
-    age?: number
+    age?: number,
+
+    // 传递静态固定值
+    JingTai: string,
 }>()
 
 
@@ -15,9 +18,11 @@ defineProps<{
     <h2>当前用户id：{{ id }}</h2>
     <h2>当前用户name：{{ name }}</h2>
     <h2>当前用户age：{{ age }}</h2>
+    <hr/>
+    <h2>获取了静态固定值：{{ JingTai }}</h2>
 
 </div>
-
+<br/><br/><br/>
 </template>
 <style lang="css" scoped>
 
