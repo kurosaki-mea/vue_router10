@@ -103,10 +103,13 @@ const router = createRouter({
         // 2. 判断是否是 vip999
         const isVip = vipToken === 'vip999'
 
+        // 3. 如果不是 VIP，拦截并提示，重定向回登录页或首页
         if (!isVip) {
           alert('只有 VIP 才能进入该页面！')
           return '/'  // 拦截并重定向
         }
+        // 4. 如果是 VIP，不需要写 return，或者 return true，就会顺利进入 /vip 页面
+        
       }
     },
 
