@@ -3,12 +3,12 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
 const Logout = () => {
-    if( localStorage.getItem('name') ) {
-        localStorage.removeItem('name')
-        alert('已经退出账号')
-        // 1. 退出账号后，重定向到登录页 或者 主页
-        router.push('/Login')
-    }
+    // 清除本地保存的信息
+    localStorage.removeItem('name')
+    alert('已经退出账号')
+    // 退出账号后，跳转到登录页（或首页 /）
+    router.push('/Login')
+
 }
 
 </script>

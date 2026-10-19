@@ -89,6 +89,26 @@ const router = createRouter({
       component: () => import('../views/LoginDashboard.vue'),
       meta: { requiresAuth: true } // 标记：该页面需要登录
     },
+    // 2. 路由独享守卫：只对某一个特定路由生效。
+    {
+      path: '/vip',
+      component: () => import('@/views/VipViews.vue'),
+      // 路由独享守卫：只有进这个页面前才会触发
+      beforeEnter: (to, from) => {
+        // const isVip = false // 假设从某处拿到 VIP 状态
+
+        // 1. 从 localStorage 里读取刚才 LoginVip 存进去的值
+        const vipToken = localStorage.getItem('vip')
+
+        // 2. 判断是否是 vip999
+        const isVip = vipToken === 'vip999'
+
+        if (!isVip) {
+          alert('只有 VIP 才能进入该页面！')
+          return '/'  // 拦截并重定向
+        }
+      }
+    },
 
 
 
@@ -127,8 +147,8 @@ router.beforeEach((to, from) => {
   }
 
   // 2. 已登录，试图访问登录页 -> 自动送到后台
-  if(to.path === '/login' && isAuthenticated) {
-    return { path: '/dasaboard' }
+  if (to.path === '/login' && isAuthenticated) {
+    return { path: '/dashboard' }
   }
 
 
