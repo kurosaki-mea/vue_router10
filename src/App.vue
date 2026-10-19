@@ -25,11 +25,14 @@ import AppR_01 from './components/AppRouter_01.vue'
         id: '八九十'
       }
     }">查看用户 123八九十</RouterLink>
-
-  
-
+  </nav>
+  <nav>
+    <!-- App.vue 或 Navbar.vue -->
+    <router-link to="/dashboard">去控制台</router-link>
   </nav>
 
+
+  <hr/>
   <div>
     <RouterView />
   </div>

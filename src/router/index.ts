@@ -74,18 +74,66 @@ const router = createRouter({
     ...userRoutes,
 
 
+    // 【路由守卫】
+    // 【路由守卫】
+    // 【1】全局守卫：对项目中所有路由跳转都生效。
+    // 【2】路由独享守卫：只对某一个特定路由生效。
+    // 【3】组件内守卫：定义在 Vue 组件内部，只针对该组件生效。
+    // 1. 最常用的“全局前置守卫”（全站通用关卡）
+    {
+      path: '/login',
+      component: () => import('@/views/Login.vue'),
+    },
+    {
+      path: '/dashboard',
+      component: () => import('../views/LoginDashboard.vue'),
+      meta: { requiresAuth: true } // 标记：该页面需要登录
+    },
+
+
 
     // ... 其他正常页面
 
-    // 必须放在最底部！！
+    // 404 NotFound模块 必须放在最底部！！
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       // component: () => import('../views/NotFound.vue'),
       component: () => import('@/views/NotFound.vue'),
     }
-
   ],
+})
+
+// 
+// 
+// 全局前置守卫：跳转前触发
+router.beforeEach((to, from) => {
+  // to: 即将要进入的路由对象
+  // from: 当前正要离开的路由对象
+
+  // 假设从 localStorage 判断登录状态
+  // const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
+
+  // 假设，从 localStorage 中获取 name ，判断登录信息
+  // const isAuthenticated = Boolean(localStorage.getItem('name'))
+  const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
+
+
+  // 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
+  // 如果页面需要登录，但用户未登录 -> 重定向到登录页
+  // // 只有当目标页面明确需要登录，且用户确实未登录时，才拦截去 /login
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return { path: '/login' } // 返回目标路径直接触发重定向
+  }
+
+  // 2. 已登录，试图访问登录页 -> 自动送到后台
+  if(to.path === '/login' && isAuthenticated) {
+    return { path: '/dasaboard' }
+  }
+
+
+  // // 允许正常通行
+  // 返回 true 或不返回，表示允许正常跳转
 })
 
 export default router
