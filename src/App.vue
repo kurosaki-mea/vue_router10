@@ -34,6 +34,9 @@ import AppR_01 from './components/AppRouter_01.vue'
   <nav>
     <RouterLink to="/redirectGo2">重定向 to="/redirectGo2", 点击重定向到主页/</RouterLink>
   </nav>
+  <nav>
+    <h2>路由导航守卫 Navigation Guards</h2>
+  </nav>
 
 
   <hr />

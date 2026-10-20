@@ -100,10 +100,9 @@ const router = createRouter({
     {
       path: '/vip',
       component: () => import('@/views/VipViews.vue'),
-      // 路由独享守卫：只有进这个页面前才会触发
+      // 【2.1】 路由独享守卫：只有进这个页面前才会触发
       beforeEnter: (to, from) => {
         // const isVip = false // 假设从某处拿到 VIP 状态
-
         // 1. 从 localStorage 里读取刚才 LoginVip 存进去的值
         const vipToken = localStorage.getItem('vip')
 
@@ -134,9 +133,24 @@ const router = createRouter({
   ],
 })
 
+//
+//
+// 【路由守卫】
+// 【1】全局守卫：对项目中所有路由跳转都生效。
+//               router.beforeEach（全局前置守卫）
+//               router.beforeResolve（全局解析守卫）
+//               router.afterEach（全局后置钩子）
+// 【2】路由独享守卫：只对某一个特定路由生效。
+//                  beforeEnter（路由独享守卫） 
+// 【3】组件内守卫：定义在 Vue 组件内部，只针对该组件生效
+//                beforeRouteEnter（在渲染该组件的路由被确认前调用）
+//                beforeRouteUpdate（当路由发生变化，但组件被复用时调用）
+//                beforeRouteLeave（当导航离开该组件的对应路由时调用）
+//
 // 
-// 
-// 全局前置守卫：跳转前触发
+// 【1.1】 全局前置守卫 router.beforeEach：跳转前触发
+//  时机：在任何路由跳转开始之前触发。
+//  用途：最常用，做登录拦截、权限校验。
 router.beforeEach((to, from) => {
   // to: 即将要进入的路由对象 / 即将要进入的目标
   // from: 当前正要离开的路由对象 / 当前导航正要离开的路由
@@ -144,20 +158,16 @@ router.beforeEach((to, from) => {
   /* 
   // 当这两个条件同时满足（&&）时。
   // 说明“一个没登录的用户，正试图闯入需要权限的内部页面”。
-  // 
   if (
     // 检查用户是否已登录；如果登录了就为false，没登录就为true真；
-    // 用户没登录（ ! 取反，如果 isAuthenticated 是 false，整体就是 true）。
     !isAuthenticated &&
     // 避免无限重定向；要to去的地方不是 login 页面；目标页面不是登录页。
     to.name !== 'Login'
   ) {
     // 将用户重定向到登录页面
     return { name: 'Login' }
-  }
-  })
+  } })
   */
-
 
 // 假设从 localStorage 判断登录状态
 // const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
@@ -165,7 +175,6 @@ router.beforeEach((to, from) => {
 // 假设，从 localStorage 中获取 name ，判断登录信息
 // const isAuthenticated = Boolean(localStorage.getItem('name'))
 const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
-
 
 // 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
 // 如果页面需要登录，但用户未登录 -> 重定向到登录页
@@ -177,13 +186,66 @@ if (to.meta.requiresAuth && !isAuthenticated) {
 // 2. 已登录，试图访问登录页 -> 自动送到后台
 if (to.path === '/login' && isAuthenticated) {
   alert('您已经登录了，如需登录其他账号，请先退出登录!')
-
   return { path: '/dashboard' }
 }
-
 
   // // 允许正常通行
   // 返回 true 或不返回，表示允许正常跳转
 })
+
+// 【1.2】全局解析守卫 router.beforeResolve
+//  时机：在 beforeEach 之后、组件内守卫和异步路由组件被解析之后触发。
+//  用途：确保所有异步组件都加载完了，适合做一些数据预加载或收尾检查。
+router.beforeResolve((to, from) => {
+  console.log('所有异步组件和组件守卫准备就绪，即将进入页面')
+})
+
+// 【1.3】全局后置钩子 router.afterEach
+//  时机：在路由跳转完全结束、页面渲染完成后触发。
+//  注意：没有返回值，无法中断或改变导航。
+//  用途：修改网页标题（document.title）、关闭加载进度条、页面埋点统计。
+router.afterEach((to, from) => {
+  document.title = (to.meta.title as string) || '默认标题'
+})
+
+// 【2.1】路由独享守卫 beforeEnter
+// 写在哪：直接写在 routes 路由规则数组里，只对当前这一个路由生效。
+// 时机：访问该特定路由时触发。
+// 用途：针对某个单独的页面（如后台管理页）做专属的权限拦截。
+// 使用在本代码页的第 99 行
+
+/*
+*  【3】 Vue组件内的守卫
+* 【3.1】 beforeRouteEnter
+* 时机：在渲染该组件的路由被确认前调用。
+* 注意：此时组件实例还没被创建，无法在代码里使用 this。
+*   // Options API 写法
+  export default {
+    beforeRouteEnter(to, from) {
+      console.log('准备进入这个组件，此时拿不到 this')
+    }
+  }
+*
+* 【3.2】 beforeRouteUpdate
+* 时机：当路由发生变化，但组件被复用时调用（例如从 /user/1 跳转到 /user/2）。 
+* 用途：可以在这里根据新的参数重新请求数据。
+* export default {
+    beforeRouteUpdate(to, from) {
+      // id 变了，重新获取新用户的数据
+      this.fetchData(to.params.id) 
+    } 
+  }
+*
+* 【3.3】 beforeRouteLeave
+* 时机：当导航离开该组件的对应路由时调用。
+* 用途：防止用户表单没保存就误触离开，弹窗提示。
+* export default {
+    beforeRouteLeave(to, from) {
+      const answer = window.confirm('修改的内容尚未保存，确定要离开吗？')
+      if (!answer) return false // 返回 false 可以取消导航，留在当前页
+    }
+  }
+* 
+*/
 
 export default router
