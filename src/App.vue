@@ -10,16 +10,16 @@ import AppR_01 from './components/AppRouter_01.vue'
   <nav>
     <RouterLink to="/">主页</RouterLink>
     <RouterLink to="/about">关于</RouterLink>
-    <RouterLink :to="{ name: 'd1Params'}">d1 看看 Params</RouterLink>
-    <RouterLink :to="{ name: 'd1Query'}">d1 看看 Query</RouterLink>
-    <RouterLink :to="{ name: 'd1Props'}">d1 看看 Props 解耦</RouterLink>
+    <RouterLink :to="{ name: 'd1Params' }">d1 看看 Params</RouterLink>
+    <RouterLink :to="{ name: 'd1Query' }">d1 看看 Query</RouterLink>
+    <RouterLink :to="{ name: 'd1Props' }">d1 看看 Props 解耦</RouterLink>
 
     <RouterLink to="/goods">去商城看看</RouterLink>
     <!-- 方式 1：直接拼接路径 -->
     <RouterLink to="/user/123">查看用户 123</RouterLink>
     <!-- 方式 2：使用命名路由 + params 属性（推荐） -->
     <!-- <RouterLink :to="{ name: 'userDetail', params: { id: '123' } }">查看用户123</RouterLink> -->
-    <RouterLink :to="{ 
+    <RouterLink :to="{
       name: 'userDetail',
       params: {
         id: '八九十'
@@ -27,14 +27,16 @@ import AppR_01 from './components/AppRouter_01.vue'
     }">查看用户 123八九十</RouterLink>
   </nav>
   <nav>
-    <h1>路由守卫相关 登录</h1>
-    <!-- 路由守卫相关 登录 -->
-    <router-link to="/login" >登录</router-link> 
+    <h2>路由守卫相关 登录</h2>
+    <router-link to="/login">登录</router-link>
     <router-link to="/dashboard">去控制台</router-link>
+  </nav>
+  <nav>
+    <RouterLink to="/redirectGo2">重定向 to="/redirectGo2", 点击重定向到主页/</RouterLink>
   </nav>
 
 
-  <hr/>
+  <hr />
   <div>
     <RouterView />
   </div>

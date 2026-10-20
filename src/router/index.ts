@@ -73,6 +73,13 @@ const router = createRouter({
     // 导入 user 路由规则
     ...userRoutes,
 
+    // redirect 重定向
+    // 访问 to="/redirectGo2", 但是重定向到 主页/
+    {
+      path: '/redirectGo2',
+      redirect: '/',
+    },
+
 
     // 【路由守卫】
     // 【路由守卫】
@@ -109,7 +116,7 @@ const router = createRouter({
           return '/'  // 拦截并重定向
         }
         // 4. 如果是 VIP，不需要写 return，或者 return true，就会顺利进入 /vip 页面
-        
+
       }
     },
 
@@ -131,30 +138,48 @@ const router = createRouter({
 // 
 // 全局前置守卫：跳转前触发
 router.beforeEach((to, from) => {
-  // to: 即将要进入的路由对象
-  // from: 当前正要离开的路由对象
+  // to: 即将要进入的路由对象 / 即将要进入的目标
+  // from: 当前正要离开的路由对象 / 当前导航正要离开的路由
 
-  // 假设从 localStorage 判断登录状态
-  // const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
-
-  // 假设，从 localStorage 中获取 name ，判断登录信息
-  // const isAuthenticated = Boolean(localStorage.getItem('name'))
-  const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
-
-
-  // 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
-  // 如果页面需要登录，但用户未登录 -> 重定向到登录页
-  // // 只有当目标页面明确需要登录，且用户确实未登录时，才拦截去 /login
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    return { path: '/login' } // 返回目标路径直接触发重定向
+  /* 
+  // 当这两个条件同时满足（&&）时。
+  // 说明“一个没登录的用户，正试图闯入需要权限的内部页面”。
+  // 
+  if (
+    // 检查用户是否已登录；如果登录了就为false，没登录就为true真；
+    // 用户没登录（ ! 取反，如果 isAuthenticated 是 false，整体就是 true）。
+    !isAuthenticated &&
+    // 避免无限重定向；要to去的地方不是 login 页面；目标页面不是登录页。
+    to.name !== 'Login'
+  ) {
+    // 将用户重定向到登录页面
+    return { name: 'Login' }
   }
+  })
+  */
 
-  // 2. 已登录，试图访问登录页 -> 自动送到后台
-  if (to.path === '/login' && isAuthenticated) {
-    alert('您已经登录了，如需登录其他账号，请先退出登录!')
 
-    return { path: '/dashboard' }
-  }
+// 假设从 localStorage 判断登录状态
+// const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
+
+// 假设，从 localStorage 中获取 name ，判断登录信息
+// const isAuthenticated = Boolean(localStorage.getItem('name'))
+const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
+
+
+// 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
+// 如果页面需要登录，但用户未登录 -> 重定向到登录页
+// // 只有当目标页面明确需要登录，且用户确实未登录时，才拦截去 /login
+if (to.meta.requiresAuth && !isAuthenticated) {
+  return { path: '/login' } // 返回目标路径直接触发重定向
+}
+
+// 2. 已登录，试图访问登录页 -> 自动送到后台
+if (to.path === '/login' && isAuthenticated) {
+  alert('您已经登录了，如需登录其他账号，请先退出登录!')
+
+  return { path: '/dashboard' }
+}
 
 
   // // 允许正常通行
