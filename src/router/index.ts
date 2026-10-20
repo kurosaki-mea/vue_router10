@@ -151,6 +151,8 @@ router.beforeEach((to, from) => {
 
   // 2. 已登录，试图访问登录页 -> 自动送到后台
   if (to.path === '/login' && isAuthenticated) {
+    alert('您已经登录了，如需登录其他账号，请先退出登录!')
+
     return { path: '/dashboard' }
   }
 

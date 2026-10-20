@@ -25,11 +25,11 @@ const LoginVip = () => {
         // 模拟登录，写入数据到 localStorage
         // 写入 setItem; 读取 getItem; 删除 removeItem;
         localStorage.setItem('vip',userVip.value)
-        alert(`登录成功，已存入 localStorage，欢迎：${userVip.value}！！！`)
+        alert(`登录成功，已存入 localStorage，欢迎用户组：${userVip.value}！！！`)
         // 2. 自动跳转到后台页面
         router.push('/vip')
     } else {
-        alert('请输入正确的信息')
+        alert('您不是 VIP 用户')
     }
 }
 

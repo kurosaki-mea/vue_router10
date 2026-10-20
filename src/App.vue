@@ -29,7 +29,7 @@ import AppR_01 from './components/AppRouter_01.vue'
   <nav>
     <h1>路由守卫相关 登录</h1>
     <!-- 路由守卫相关 登录 -->
-    <router-link to="/login">登录</router-link> 
+    <router-link to="/login" >登录</router-link> 
     <router-link to="/dashboard">去控制台</router-link>
   </nav>
 

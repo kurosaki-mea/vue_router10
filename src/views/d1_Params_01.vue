@@ -44,6 +44,7 @@ router.push('/goods/1001')
             <!-- 1. 路径传参 -->
             <RouterLink to="/d1_params/123">to 123</RouterLink>
             <!-- 对象形式写法1 -->
+            <!-- params 搭配 name，不能搭配 path  -->
             <RouterLink :to="{ name: 'd1ParamsId', params: { id: '456' } }">to 456</RouterLink>
             <!-- 对象形式写法2：也可以这样写，更直观清晰 -->
             <RouterLink :to="{
