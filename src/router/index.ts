@@ -119,7 +119,7 @@ const router = createRouter({
     },
     {
       path: '/dashboard',
-      component: () => import('../views/LoginDashboard.vue'),
+      component: () => import('@/views/LoginDashboard.vue'),
       meta: { requiresAuth: true } // 标记：该页面需要登录
     },
     // 2. 路由独享守卫：只对某一个特定路由生效。
@@ -176,25 +176,6 @@ const router = createRouter({
     }
   ],
 })
-
-/*
-*  // 第一个守卫：meta 测试代码块区域，第 150 行
-*  
-*  
-*/
-router.beforeEach((to, from) => {
-  // 1. 读取 meta 里的网页标题并修改
-  if (to.meta.title) {
-    document.title = to.meta.title as string
-  }
-
-  // 2. 读取 meta 里的校验标记，实现统一拦截
-  // if (to.meta.requiresAuth && !isAuthenticated) {
-  if (to.meta.requiresAuth) {
-    return { name: 'Login' } // 没登录就拦截去登录页
-  }
-})
-
 
 
 //
@@ -255,7 +236,15 @@ router.beforeEach((to, from) => {
 
   // // 允许正常通行
   // 返回 true 或不返回，表示允许正常跳转
+
+  ////////////////////
+  //  meta 测试代码块区域，第 150 行
+  // 1. 读取 meta 里的网页标题并修改
+  if (to.meta.title) {
+    document.title = to.meta.title as string
+  }
 })
+// end: beforeEach
 
 // 【1.2】全局解析守卫 router.beforeResolve
 //  时机：在 beforeEach 之后、组件内守卫和异步路由组件被解析之后触发。
