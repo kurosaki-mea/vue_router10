@@ -39,11 +39,7 @@ watch( () => route.query.id, (newId) => {
     console.log('id变了，最新的id是', newId)
 })
 
-
 */
-
-
-
 
 </script>
 <template>

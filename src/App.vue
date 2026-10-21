@@ -27,12 +27,17 @@ import AppR_01 from './components/AppRouter_01.vue'
     }">查看用户 123八九十</RouterLink>
   </nav>
   <nav>
+    <h3>重定向和别名</h3>
+    <RouterLink to="/redirectGo2">重定向 to="/redirectGo2", 点击重定向到主页/</RouterLink>
+    <RouterLink to="/search/123">动态路由重定向 to="/search/123", path:'/search/:keyword',</RouterLink><br/>
+    <RouterLink to="/zhuye">主页 / 的别名：to="zhuye"</RouterLink>
+    <RouterLink to="/home">主页 / 的别名：to="home"</RouterLink>
+  </nav>
+  <nav>
     <h2>路由守卫相关 登录</h2>
     <router-link to="/login">登录</router-link>
     <router-link to="/dashboard">去控制台</router-link>
-  </nav>
-  <nav>
-    <RouterLink to="/redirectGo2">重定向 to="/redirectGo2", 点击重定向到主页/</RouterLink>
+    <router-link to="/meta_01">to /meta_01</router-link>
   </nav>
   <nav>
     <h2>路由导航守卫 Navigation Guards</h2>

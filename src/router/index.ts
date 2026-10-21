@@ -73,11 +73,37 @@ const router = createRouter({
     // 导入 user 路由规则
     ...userRoutes,
 
-    // redirect 重定向
+    /*
+    ** 【重定向与别名】
+    ** 1、redirect：强行转场，url 会变。
+    ** 2、alias：url 不变，组件换掉。
+    */
+    // 【重定向与别名 1】重定向 redirect
+    // 字符串重定向、对象重定向、函数式动态重定向。
     // 访问 to="/redirectGo2", 但是重定向到 主页/
     {
       path: '/redirectGo2',
-      redirect: '/',
+      redirect: '/',  // 1. 基础重定向（直接写字符串路径）
+      // 2. 重定向到命名路由
+      // redirect: { name: 'home' },
+      // 3. 动态重定向（根据参数决定去哪）↓↓↓↓↓
+    },
+    {
+      path: '/search/:keyword',
+      // 3. 动态重定向（根据参数决定去哪）
+      redirect: to => {
+        // to 是目标对象，可以拿到 params 里的参数
+        // 这个query:{id:xxx} 是自定义键值对 例如YourName:'xxx'
+        return { path: `/d1_Query_Views`, query: { id: to.params.keyword } }
+      }
+    },
+    //【重定向与别名 2】别名 alias 
+    // 允许同一个组件通过不同的 URL 路径访问。
+    {
+      path: '/',
+      component: Home,
+      // 允许通过 '/' 或 '/home' 或 '/zhuye' 访问，且地址栏不会发生重定向跳转
+      alias: ['/home', '/zhuye', '/index']
     },
 
 
@@ -118,6 +144,24 @@ const router = createRouter({
 
       }
     },
+    /* 
+    *  路由元信息（meta）
+    *  核心概念：meta 是一个“附加信息仓库”，
+    *           可以在定义路由时，给每个路由贴上各种自定义的标签（元数据）。
+    *  经典场景：配合全局守卫做权限校验（“这个页面需要登录吗？”）或者动态修改网页标题。
+    *  
+    */
+    {
+      path: '/meta_01',
+      component: () => import('@/views/d1_meta_01.vue'),
+      // 通过 meta 携带自定义标签
+      meta: {
+        // requiresAuth: true,   // 标记：该页面需要登录才能看
+        title: 'meta测试页面用',// 标记：页面的中文标题
+        vipNumber: 999,       // 标记：本页面的 vip 要求的级别数字
+        roles: ['admin'],     // 标记：允许访问的角色
+      }
+    },
 
 
 
@@ -133,15 +177,35 @@ const router = createRouter({
   ],
 })
 
+/*
+*  // 第一个守卫：meta 测试代码块区域，第 150 行
+*  
+*  
+*/
+router.beforeEach((to, from) => {
+  // 1. 读取 meta 里的网页标题并修改
+  if (to.meta.title) {
+    document.title = to.meta.title as string
+  }
+
+  // 2. 读取 meta 里的校验标记，实现统一拦截
+  // if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuth) {
+    return { name: 'Login' } // 没登录就拦截去登录页
+  }
+})
+
+
+
 //
 //
 // 【路由守卫】
 // 【1】全局守卫：对项目中所有路由跳转都生效。
-//               router.beforeEach（全局前置守卫）
+//               router.beforeEach（全局前置守卫：最常用的登录拦截）
 //               router.beforeResolve（全局解析守卫）
-//               router.afterEach（全局后置钩子）
+//               router.afterEach（全局后置钩子：改标题、关进度条）
 // 【2】路由独享守卫：只对某一个特定路由生效。
-//                  beforeEnter（路由独享守卫） 
+//                  beforeEnter（路由独享守卫：写在单个路由规则里的专属检查） 
 // 【3】组件内守卫：定义在 Vue 组件内部，只针对该组件生效
 //                beforeRouteEnter（在渲染该组件的路由被确认前调用）
 //                beforeRouteUpdate（当路由发生变化，但组件被复用时调用）
@@ -169,25 +233,25 @@ router.beforeEach((to, from) => {
   } })
   */
 
-// 假设从 localStorage 判断登录状态
-// const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
+  // 假设从 localStorage 判断登录状态
+  // const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
 
-// 假设，从 localStorage 中获取 name ，判断登录信息
-// const isAuthenticated = Boolean(localStorage.getItem('name'))
-const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
+  // 假设，从 localStorage 中获取 name ，判断登录信息
+  // const isAuthenticated = Boolean(localStorage.getItem('name'))
+  const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
 
-// 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
-// 如果页面需要登录，但用户未登录 -> 重定向到登录页
-// // 只有当目标页面明确需要登录，且用户确实未登录时，才拦截去 /login
-if (to.meta.requiresAuth && !isAuthenticated) {
-  return { path: '/login' } // 返回目标路径直接触发重定向
-}
+  // 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
+  // 如果页面需要登录，但用户未登录 -> 重定向到登录页
+  // // 只有当目标页面明确需要登录，且用户确实未登录时，才拦截去 /login
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return { path: '/login' } // 返回目标路径直接触发重定向
+  }
 
-// 2. 已登录，试图访问登录页 -> 自动送到后台
-if (to.path === '/login' && isAuthenticated) {
-  alert('您已经登录了，如需登录其他账号，请先退出登录!')
-  return { path: '/dashboard' }
-}
+  // 2. 已登录，试图访问登录页 -> 自动送到后台
+  if (to.path === '/login' && isAuthenticated) {
+    alert('您已经登录了，如需登录其他账号，请先退出登录!')
+    return { path: '/dashboard' }
+  }
 
   // // 允许正常通行
   // 返回 true 或不返回，表示允许正常跳转
@@ -239,13 +303,14 @@ router.afterEach((to, from) => {
 * 【3.3】 beforeRouteLeave
 * 时机：当导航离开该组件的对应路由时调用。
 * 用途：防止用户表单没保存就误触离开，弹窗提示。
-* export default {
+  export default {
     beforeRouteLeave(to, from) {
       const answer = window.confirm('修改的内容尚未保存，确定要离开吗？')
       if (!answer) return false // 返回 false 可以取消导航，留在当前页
     }
   }
-* 
 */
+
+
 
 export default router
