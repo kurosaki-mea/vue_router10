@@ -37,6 +37,7 @@ import AppR_01 from './components/AppRouter_01.vue'
     <h2>路由守卫相关 登录</h2>
     <router-link to="/login">登录</router-link>
     <router-link to="/dashboard">去控制台</router-link>
+    <router-link to="/vip"> to vip</router-link>
     <router-link to="/meta_01">to /meta_01</router-link>
   </nav>
   <nav>

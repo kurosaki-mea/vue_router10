@@ -218,8 +218,8 @@ router.beforeEach((to, from) => {
   // const isAuthenticated = Boolean(localStorage.getItem('token')) // 假设从 localStorage 判断登录状态
 
   // 假设，从 localStorage 中获取 name ，判断登录信息
-  // const isAuthenticated = Boolean(localStorage.getItem('name'))
-  const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
+  const isAuthenticated = Boolean(localStorage.getItem('name'))
+  // const isAuthenticated = Boolean(localStorage.getItem('name') === '111')
 
   // 1. 未登录，试图访问需要权限的页面 -> 拦截到登录页
   // 如果页面需要登录，但用户未登录 -> 重定向到登录页

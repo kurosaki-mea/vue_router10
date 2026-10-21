@@ -7,7 +7,7 @@ const Logout = () => {
     localStorage.removeItem('name')
     alert('已经退出账号')
     // 退出账号后，跳转到登录页（或首页 /）
-    router.push('/Login')
+    router.push('/login')
 
 }
 
